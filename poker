@@ -1,0 +1,28 @@
+#!/usr/bin/env ruby
+
+require "readline"
+
+def prompt promptBegining=""
+    # the true parameter keeps a history of the previously entered commands
+    inText = Readline.readline(promptBegining, false).squeeze(" ").strip.downcase
+    inText
+end
+
+def main
+
+	players = []
+
+	puts "Welcome to Texas Hold-em!"
+	player_count = prompt "How many players? "
+	player_count.to_i.times { |p|
+		n = prompt "Player #{p + 1}'s name: "
+		players << n
+	}
+
+	p players
+
+end
+
+if __FILE__ == $0
+	main
+end
