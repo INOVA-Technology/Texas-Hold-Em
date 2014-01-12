@@ -8,21 +8,38 @@ def prompt promptBegining=""
     inText
 end
 
-def main
+_players = []
 
-	players = []
+def deal_hand players
+	deck = []
+	
+	["clubs", "hearts", "spades", "diamonds"].each { |s|
+		["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"].each { |n|
+			deck << [n, s]
+		}
+	}
+
+	deck.shuffle!
+
+	players.each { |p|
+		p[2] << deck.pop
+		p[2] << deck.pop
+	}
+end
+
+def main players
 
 	puts "Welcome to Texas Hold-em!"
 	player_count = prompt "How many players? "
 	player_count.to_i.times { |p|
 		n = prompt "Player #{p + 1}'s name: "
-		players << n
+		players << [n, 0, []] # [name, money]
 	}
 
-	p players
+	deal_hand players
 
 end
 
 if __FILE__ == $0
-	main
+	main _players
 end
