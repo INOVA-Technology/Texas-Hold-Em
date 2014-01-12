@@ -8,10 +8,11 @@ def prompt promptBegining=""
     inText
 end
 
-_players = []
+_current_cards = []
+	  _players = []
+		 _deck = []
 
-def deal_hand players
-	deck = []
+def deal_hand players, deck
 	
 	["clubs", "hearts", "spades", "diamonds"].each { |s|
 		["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"].each { |n|
@@ -24,22 +25,37 @@ def deal_hand players
 	players.each { |p|
 		p[2] << deck.pop
 		p[2] << deck.pop
+		p[1] = p[1] - 5
 	}
 end
 
-def main players
+def the_flop deck, current_cards
+	3.times {
+		current_cards << deck.pop
+	}
+
+	p current_cards
+end
+
+# def place_bets players
+# 	players.each
+# end
+
+def main players, deck, current_cards
 
 	puts "Welcome to Texas Hold-em!"
 	player_count = prompt "How many players? "
 	player_count.to_i.times { |p|
 		n = prompt "Player #{p + 1}'s name: "
-		players << [n, 0, []] # [name, money]
+		players << [n, 500, []] # [name, money, [cards]]
 	}
 
-	deal_hand players
+	deal_hand players, deck
+	the_flop deck, current_cards
+	# place_bets players
 
 end
 
 if __FILE__ == $0
-	main _players
+	main _players, _deck, _current_cards
 end
