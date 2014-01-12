@@ -9,9 +9,11 @@ def prompt promptBegining=""
 end
 
 $current_cards = []
+   $players_in = []
 	  $players = []
 		 $deck = []
 		  $pot = 0
+   
 
 def deal_hand
 	["clubs", "hearts", "spades", "diamonds"].each { |s|
@@ -26,6 +28,7 @@ def deal_hand
 		p[2] << $deck.pop
 		p[2] << $deck.pop
 		p[1] = p[1] - 5
+		$pot += 5
 	}
 end
 
@@ -36,9 +39,7 @@ def print_current_cards
 end
 
 def the_flop
-	3.times {
-		$current_cards << $deck.pop
-	}
+	3.times { $current_cards << $deck.pop }
 end
 
 def the_turn
@@ -52,6 +53,7 @@ end
 def place_bets
 	min_bet = 0
 	$players.each { |p|
+		next unless $players_in.include? p[0]
 		puts "#{p[0]}'s turn. (press enter when ready)"
 		gets
 		print_current_cards
@@ -73,9 +75,17 @@ def place_bets
 					break
 				end
 			else
+				$players_in -= [p[0]]
 				break
 			end
 		end
+	}
+end
+
+def check_hands
+	$players.each { |p|
+		next unless $players_in.include? p[0]
+		
 	}
 end
 
@@ -85,6 +95,7 @@ def main
 	player_count = prompt "How many players? "
 	player_count.to_i.times { |p|
 		n = prompt "Player #{p + 1}'s name: "
+		$players_in << n
 		$players << [n, 500, []] # [name, money, [cards]]
 	}
 
