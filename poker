@@ -8,54 +8,99 @@ def prompt promptBegining=""
     inText
 end
 
-_current_cards = []
-	  _players = []
-		 _deck = []
+$current_cards = []
+	  $players = []
+		 $deck = []
+		  $pot = 0
 
-def deal_hand players, deck
-	
+def deal_hand
 	["clubs", "hearts", "spades", "diamonds"].each { |s|
 		["A", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K"].each { |n|
-			deck << [n, s]
+			$deck << [n, s]
 		}
 	}
 
-	deck.shuffle!
+	$deck.shuffle!
 
-	players.each { |p|
-		p[2] << deck.pop
-		p[2] << deck.pop
+	$players.each { |p|
+		p[2] << $deck.pop
+		p[2] << $deck.pop
 		p[1] = p[1] - 5
 	}
 end
 
-def the_flop deck, current_cards
-	3.times {
-		current_cards << deck.pop
-	}
-
-	p current_cards
+def print_current_cards
+	print "Cards on table: "
+	tmp = $current_cards.map { |c| "#{c[0]} of #{c[1]}" }
+	puts tmp.join ", "
 end
 
-# def place_bets players
-# 	players.each
-# end
+def the_flop
+	3.times {
+		$current_cards << $deck.pop
+	}
+end
 
-def main players, deck, current_cards
+def the_turn
+	$current_cards << $deck.pop
+end
+
+def the_river
+	$current_cards << $deck.pop
+end
+
+def place_bets
+	min_bet = 0
+	$players.each { |p|
+		puts "#{p[0]}'s turn. (press enter when ready)"
+		gets
+		print_current_cards
+		print "Your hand: "
+		tmp = p[2].map { |c| "#{c[0]} of #{c[1]}" }
+		puts tmp.join ", "
+		puts
+		puts "The current bet is $#{min_bet} and there is $#{$pot} in the $pot."
+		loop do
+			bet = prompt "How much would you like to bet? (type fold to fold) "
+			unless bet == "fold"
+				bet = bet.to_i
+				if bet < min_bet
+					puts "The minimum bet is #{min_bet}"
+				else
+					min_bet += bet
+					$pot += bet
+					p[1] -= bet
+					break
+				end
+			else
+				break
+			end
+		end
+	}
+end
+
+def main
 
 	puts "Welcome to Texas Hold-em!"
 	player_count = prompt "How many players? "
 	player_count.to_i.times { |p|
 		n = prompt "Player #{p + 1}'s name: "
-		players << [n, 500, []] # [name, money, [cards]]
+		$players << [n, 500, []] # [name, money, [cards]]
 	}
 
-	deal_hand players, deck
-	the_flop deck, current_cards
-	# place_bets players
+	deal_hand
+
+	the_flop
+	place_bets
+
+	the_turn
+	place_bets
+
+	the_river
+	place_bets
 
 end
 
 if __FILE__ == $0
-	main _players, _deck, _current_cards
+	main
 end
